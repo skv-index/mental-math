@@ -1,7 +1,17 @@
 import { Topic, GradeLevel } from '@/types';
 import { createClient } from '@/lib/supabase/server';
 
-function mapRow(row: any, progress: number = 0, questionsCorrect: number = 0): Topic {
+interface TopicRow {
+  id: string;
+  level_id: GradeLevel;
+  name: string;
+  description: string;
+  icon: string;
+  difficulty: 'easy' | 'medium' | 'hard';
+  question_count: number;
+}
+
+function mapRow(row: TopicRow, progress: number = 0, questionsCorrect: number = 0): Topic {
   return {
     id: row.id,
     levelId: row.level_id,

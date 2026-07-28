@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Trophy, Medal, Crown } from 'lucide-react';
+import { Crown } from 'lucide-react';
 import { LeaderboardEntry, GradeLevel } from '@/types';
 import { levels } from '@/data/levels';
 import { createClient } from '@/lib/supabase/client';
@@ -19,13 +19,18 @@ export default function LeaderboardPage() {
   }, []);
 
   useEffect(() => {
-    setLoading(true);
+    let ignore = false;
     fetch(`/api/leaderboard?level=${filter}`)
       .then((r) => r.json())
       .then((data) => {
-        setEntries(data.entries ?? []);
-        setLoading(false);
+        if (!ignore) {
+          setEntries(data.entries ?? []);
+          setLoading(false);
+        }
       });
+    return () => {
+      ignore = true;
+    };
   }, [filter]);
 
   const unlockedLevels = levels.filter((l) => l.unlocked);
@@ -42,13 +47,27 @@ export default function LeaderboardPage() {
       </div>
 
       <div className="scrollbar-hide flex gap-2 overflow-x-auto pb-2">
-        <FilterTab label="All levels" active={filter === 'all'} onClick={() => setFilter('all')} />
+        <FilterTab
+          label="All levels"
+          active={filter === 'all'}
+          onClick={() => {
+            if (filter !== 'all') {
+              setFilter('all');
+              setLoading(true);
+            }
+          }}
+        />
         {unlockedLevels.map((level) => (
           <FilterTab
             key={level.id}
             label={level.id === 'K' ? 'K' : level.id === 'College' ? 'College' : `G${level.id}`}
             active={filter === level.id}
-            onClick={() => setFilter(level.id)}
+            onClick={() => {
+              if (filter !== level.id) {
+                setFilter(level.id);
+                setLoading(true);
+              }
+            }}
           />
         ))}
       </div>

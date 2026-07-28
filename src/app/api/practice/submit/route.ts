@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { regenerateQuestion } from '@/lib/questionGenerator';
-import { POINTS_PER_CORRECT, MAX_DISPLAY_NAME_LENGTH } from '@/lib/constants';
+import { POINTS_PER_CORRECT } from '@/lib/constants';
 
 const VALID_DIFFICULTIES = ['easy', 'medium', 'hard'] as const;
 type Difficulty = (typeof VALID_DIFFICULTIES)[number];

@@ -38,13 +38,18 @@ export default function PracticePage() {
   };
 
   useEffect(() => {
-    setLoading(true);
+    let ignore = false;
     fetch(`/api/topics?level=${selectedLevel}`)
       .then((r) => r.json())
       .then((data) => {
-        setTopics(data.topics ?? []);
-        setLoading(false);
+        if (!ignore) {
+          setTopics(data.topics ?? []);
+          setLoading(false);
+        }
       });
+    return () => {
+      ignore = true;
+    };
   }, [selectedLevel]);
 
   useEffect(() => {
@@ -115,7 +120,12 @@ export default function PracticePage() {
             key={level.id}
             level={level}
             active={selectedLevel === level.id}
-            onClick={() => level.unlocked && setSelectedLevel(level.id)}
+            onClick={() => {
+              if (level.unlocked && selectedLevel !== level.id) {
+                setSelectedLevel(level.id);
+                setLoading(true);
+              }
+            }}
           />
         ))}
       </div>

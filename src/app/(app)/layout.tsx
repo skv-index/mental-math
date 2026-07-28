@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Home, BookOpen, Brain, Trophy, User, Settings, Flame } from 'lucide-react';
+import { Home, BookOpen, Trophy, User, Settings, Flame } from 'lucide-react';
 import { fetchCurrentUser } from '@/lib/getUser';
 
 export const metadata: Metadata = {

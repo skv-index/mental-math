@@ -1,7 +1,16 @@
 import { LeaderboardEntry, GradeLevel } from '@/types';
 import { createClient } from '@/lib/supabase/server';
 
-function mapRow(row: any): LeaderboardEntry {
+interface LeaderboardRow {
+  rank: number;
+  user_id: string;
+  name: string;
+  avatar_url?: string | null;
+  score: number;
+  level: GradeLevel;
+}
+
+function mapRow(row: LeaderboardRow): LeaderboardEntry {
   return {
     rank: row.rank,
     userId: row.user_id,

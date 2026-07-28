@@ -20,7 +20,6 @@ const topicMap = await fetchTopicsByIds(topicIds);
 const topicsWithNames = progress.map((p) => ({ ...p, topic: topicMap.get(p.topicId) }));
 
 const totalQuestions = progress.reduce((sum, p) => sum + p.questionsAnswered, 0);
-const totalCorrect = progress.reduce((sum, p) => sum + p.questionsCorrect, 0);
 // Use reduce instead of spread to avoid call-stack overflow on large arrays
 const bestStreakOverall = progress.reduce((max, p) => Math.max(max, p.bestStreak), 0);
 const levelInfo = levels.find((l) => l.id === user.currentLevel);

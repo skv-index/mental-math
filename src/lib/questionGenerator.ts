@@ -95,8 +95,8 @@ function generate(topicId: string, rand: () => number, difficulty: Difficulty = 
     case 'g1-subtraction': {
       const maxA = isEasy ? 10 : isHard ? 40 : 20;
       const minA = isEasy ? 5 : isHard ? 15 : 5;
-      let a = randInt(rand, minA, maxA);
-      let b = randInt(rand, 1, a);
+      const a = randInt(rand, minA, maxA);
+      const b = randInt(rand, 1, a);
       const answer = a - b;
       return {
         type: 'numeric',
@@ -119,8 +119,8 @@ function generate(topicId: string, rand: () => number, difficulty: Difficulty = 
       };
     }
     case 'g2-subtraction100': {
-      let a = isEasy ? randInt(rand, 20, 50) : isHard ? randInt(rand, 60, 150) : randInt(rand, 30, 99);
-      let b = isEasy ? randInt(rand, 5, a - 1) : isHard ? randInt(rand, 25, a - 1) : randInt(rand, 10, a - 1);
+      const a = isEasy ? randInt(rand, 20, 50) : isHard ? randInt(rand, 60, 150) : randInt(rand, 30, 99);
+      const b = isEasy ? randInt(rand, 5, a - 1) : isHard ? randInt(rand, 25, a - 1) : randInt(rand, 10, a - 1);
       const answer = a - b;
       return {
         type: 'numeric',

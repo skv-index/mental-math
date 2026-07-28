@@ -38,6 +38,7 @@ export async function GET(request: Request) {
 
     // Strip correctAnswer before sending to client — only seed + topicId are needed
     // to verify the answer server-side later.
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const safeQuestions = batch.map(({ correctAnswer, ...rest }) => rest);
 
     return NextResponse.json({ questions: safeQuestions });

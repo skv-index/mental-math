@@ -43,7 +43,7 @@ function PracticeSession() {
 
   const [topic, setTopic] = useState<TopicInfo | null>(null);
   const [questions, setQuestions] = useState<SafeQuestion[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Boolean(topicId));
   const [loadError, setLoadError] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState('');
@@ -64,7 +64,6 @@ function PracticeSession() {
 
   useEffect(() => {
     if (!topicId) {
-      setLoading(false);
       return;
     }
 
@@ -157,7 +156,7 @@ function PracticeSession() {
       setSubmitting(false);
       setTimeout(handleNext, 900);
     },
-    [answerState, currentQuestion, submitting, handleNext]
+    [answerState, currentQuestion, submitting, effectiveDifficulty, handleNext]
   );
 
   // Keyboard shortcuts: 1-4 to pick MCQ options
@@ -181,8 +180,10 @@ function PracticeSession() {
   useEffect(() => {
     if (loading || sessionComplete || answerState !== 'idle' || !currentQuestion) return;
     if (timeLeft <= 0) {
-      handleSubmit('');
-      return;
+      const timeoutId = setTimeout(() => {
+        handleSubmit('');
+      }, 0);
+      return () => clearTimeout(timeoutId);
     }
     const timer = setTimeout(() => setTimeLeft((t) => t - 1), 1000);
     return () => clearTimeout(timer);

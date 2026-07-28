@@ -18,16 +18,17 @@ export default function SettingsPage() {
   const [saved, setSaved] = useState(false);
 
   const [soundEnabled, setSoundEnabled] = useState(true);
-  const [defaultDifficulty, setDefaultDifficulty] = useState<Difficulty>('medium');
+  const [defaultDifficulty, setDefaultDifficulty] = useState<Difficulty>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = window.localStorage.getItem('defaultDifficulty');
+      if (stored === 'easy' || stored === 'medium' || stored === 'hard') {
+        return stored;
+      }
+    }
+    return 'medium';
+  });
 
   const unlockedLevels = levels.filter((l) => l.unlocked);
-
-  useEffect(() => {
-    const storedDifficulty = window.localStorage.getItem('defaultDifficulty');
-    if (storedDifficulty === 'easy' || storedDifficulty === 'medium' || storedDifficulty === 'hard') {
-      setDefaultDifficulty(storedDifficulty);
-    }
-  }, []);
 
   useEffect(() => {
     window.localStorage.setItem('defaultDifficulty', defaultDifficulty);
