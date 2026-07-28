@@ -1,0 +1,75 @@
+Folder PATH listing for volume New Volume
+Volume serial number is 00000188 1AE9:2833
+D:\PROJECTS\MENTAL-MATH\SRC
++---app
+|   |   favicon.ico
+|   |   globals.css
+|   |   layout.tsx
+|   |   page.tsx
+|   |   
+|   +---(app)
+|   |   |   layout.tsx
+|   |   |   
+|   |   +---about
+|   |   |       page.tsx
+|   |   |       
+|   |   +---dashboard
+|   |   |       page.tsx
+|   |   |       
+|   |   +---leaderboard
+|   |   |       page.tsx
+|   |   |       
+|   |   +---learn
+|   |   |       page.tsx
+|   |   |       
+|   |   +---practice
+|   |   |       page.tsx
+|   |   |       
+|   |   +---profile
+|   |   |       page.tsx
+|   |   |       
+|   |   \---settings
+|   |           page.tsx
+|   |           
+|   +---api
+|   |   +---leaderboard
+|   |   |       route.ts
+|   |   |       
+|   |   +---levels
+|   |   |       route.ts
+|   |   |       
+|   |   +---practice
+|   |   |   +---questions
+|   |   |   |       route.ts
+|   |   |   |       
+|   |   |   \---submit
+|   |   |           route.ts
+|   |   |           
+|   |   \---topics
+|   |           route.ts
+|   |           
+|   +---login
+|   |       page.tsx
+|   |       
+|   \---register
+|           page.tsx
+|           
++---data
+|       levels.ts
+|       
++---lib
+|   |   getLeaderboard.ts
+|   |   getTopics.ts
+|   |   getUser.ts
+|   |   levelUnlock.ts
+|   |   questionGenerator.ts
+|   |   updateUser.ts
+|   |   
+|   \---supabase
+|           client.ts
+|           middleware.ts
+|           server.ts
+|           
+\---types
+        index.ts
+        

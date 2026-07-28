@@ -1,0 +1,140 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-bg: #F8FAFC;
+    --color-surface: #FFFFFF;
+    --color-surface-hover: #F1F5F9;
+    --color-accent-amber: #D97706;
+    --color-accent-mint: #0E7A90;
+    --color-accent-coral: #E11D48;
+    --color-text-primary: #0F172A;
+    --color-text-muted: #475569;
+    --color-border: rgba(15, 23, 42, 0.1);
+    color-scheme: light;
+  }
+
+  * {
+    @apply border-slate-200;
+  }
+
+  html, body {
+    background-color: #F8FAFC !important;
+    color: #0F172A !important;
+  }
+
+  ::selection {
+    background-color: rgba(217, 119, 6, 0.2);
+    color: #0F172A;
+  }
+
+  /* Custom scrollbar to match light theme */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #F8FAFC;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
+  }
+
+  /* Visible keyboard focus states for accessibility */
+  :focus-visible {
+    outline: 2px solid #0E7A90;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+@layer utilities {
+  /* Reusable card surface */
+  .card-surface {
+    background-color: #FFFFFF !important;
+    border: 1px solid rgba(15, 23, 42, 0.1) !important;
+    border-radius: 1rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  }
+
+  /* Progress bar track */
+  .progress-track {
+    @apply h-2 w-full overflow-hidden rounded-full bg-slate-200;
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* Permanent Light Theme rules for legacy dark class utility names */
+[class*="bg-[#0F1521]"],
+[class*="bg-[#0B1220]"] {
+  background-color: #F8FAFC !important;
+}
+
+[class*="bg-[#161E2E]"],
+[class*="bg-[#131D33]"] {
+  background-color: #FFFFFF !important;
+}
+
+[class*="bg-[#1C2536]"] {
+  background-color: #F1F5F9 !important;
+}
+
+[class*="hover:bg-[#1C2536]"]:hover,
+[class*="hover:bg-[#131D33]"]:hover,
+[class*="hover:bg-[#161E2E]"]:hover {
+  background-color: #F1F5F9 !important;
+}
+
+[class*="text-[#EDF1F7]"],
+[class*="text-slate-100"],
+[class*="text-slate-200"] {
+  color: #0F172A !important;
+}
+
+[class*="text-[#8B96AB]"],
+[class*="text-slate-400"] {
+  color: #475569 !important;
+}
+
+[class*="hover:text-[#EDF1F7]"]:hover {
+  color: #0F172A !important;
+}
+
+[class*="border-[#5EEAD4]/10"],
+[class*="border-[#5EEAD4]/20"],
+[class*="border-white/10"],
+[class*="border-white/5"] {
+  border-color: rgba(15, 23, 42, 0.1) !important;
+}
+
+input,
+select {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border-color: rgba(15, 23, 42, 0.15) !important;
+}
+
+header {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-bottom-color: rgba(15, 23, 42, 0.1) !important;
+}
+
+nav {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-top-color: rgba(15, 23, 42, 0.1) !important;
+}
