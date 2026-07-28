@@ -20,7 +20,7 @@ const nextConfig: NextConfig = {
     return [
       {
         // Apply security headers to all routes
-        source: '/(.*)',
+        source: '/:path*',
         headers: securityHeaders,
       },
     ];
