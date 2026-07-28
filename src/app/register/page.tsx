@@ -1,233 +1,126 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Volume2, VolumeX, Gauge, GraduationCap, Info, User, Loader2, Check } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
-import { GradeLevel, Difficulty } from '@/types';
-import { levels } from '@/data/levels';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { Mail, Lock, User, Loader2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
-export default function SettingsPage() {
+export default function RegisterPage() {
+  const router = useRouter();
   const supabase = createClient();
 
-  const [userId, setUserId] = useState<string | null>(null);
   const [name, setName] = useState('');
-  const [grade, setGrade] = useState<GradeLevel>('1');
-  const [loadingProfile, setLoadingProfile] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const [soundEnabled, setSoundEnabled] = useState(true);
-  const [defaultDifficulty, setDefaultDifficulty] = useState<Difficulty>(() => {
-    if (typeof window !== 'undefined') {
-      const stored = window.localStorage.getItem('defaultDifficulty');
-      if (stored === 'easy' || stored === 'medium' || stored === 'hard') {
-        return stored;
-      }
+  async function handleRegister(e: React.FormEvent) {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    const { error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { name: name.trim() },
+      },
+    });
+
+    if (signUpError) {
+      setError(signUpError.message);
+      setLoading(false);
+      return;
     }
-    return 'medium';
-  });
 
-  const unlockedLevels = levels.filter((l) => l.unlocked);
-
-  useEffect(() => {
-    window.localStorage.setItem('defaultDifficulty', defaultDifficulty);
-  }, [defaultDifficulty]);
-
-  useEffect(() => {
-    async function load() {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) return;
-
-      setUserId(user.id);
-
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('name, current_level')
-        .eq('id', user.id)
-        .single();
-
-      if (profile) {
-        setName(profile.name);
-        setGrade(profile.current_level as GradeLevel);
-      }
-      setLoadingProfile(false);
-    }
-    load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  async function handleSaveProfile() {
-    if (!userId || !name.trim()) return;
-    setSaving(true);
-    setSaved(false);
-
-    const { error } = await supabase
-      .from('profiles')
-      .update({ name: name.trim(), current_level: grade })
-      .eq('id', userId);
-
-    setSaving(false);
-    if (!error) {
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
-    }
+    router.push('/dashboard');
+    router.refresh();
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-[family-name:var(--font-display)] text-2xl font-semibold text-[#EDF1F7] sm:text-3xl">
-          Settings
-        </h1>
-        <p className="mt-1 text-sm text-[#8B96AB]">Manage your account and practice preferences.</p>
-      </div>
+    <div className="flex min-h-screen items-center justify-center bg-[#0F1521] px-4">
+      <div
+        className="pointer-events-none fixed inset-0 opacity-[0.04]"
+        style={{
+          backgroundImage:
+            'linear-gradient(#5EEAD4 1px, transparent 1px), linear-gradient(90deg, #5EEAD4 1px, transparent 1px)',
+          backgroundSize: '32px 32px',
+        }}
+      />
 
-      {/* Account settings — real, saved to database */}
-      <div className="card-surface p-5">
-        <div className="mb-4 flex items-center gap-2.5">
-          <div className="rounded-lg bg-[#FFB020]/10 p-2 text-[#FFB020]">
-            <User size={18} strokeWidth={2} />
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-[#EDF1F7]">Account</p>
-            <p className="text-xs text-[#8B96AB]">Your name and grade level, shown on the leaderboard</p>
-          </div>
+      <div className="card-surface relative w-full max-w-sm p-6 sm:p-8">
+        <div className="mb-6 text-center">
+          <Link href="/" className="font-[family-name:var(--font-display)] text-lg font-semibold text-[#EDF1F7]">
+            Mental<span className="text-[#FFB020]">Math</span>
+          </Link>
+          <h1 className="mt-4 font-[family-name:var(--font-display)] text-xl font-semibold text-[#EDF1F7]">
+            Create your account
+          </h1>
+          <p className="mt-1 text-sm text-[#8B96AB]">Start practicing in under a minute.</p>
         </div>
 
-        {loadingProfile ? (
-          <div className="h-20 animate-pulse rounded-lg bg-[#0F1521]" />
-        ) : (
-          <div className="space-y-3">
-            <div>
-              <label className="mb-1.5 block text-xs font-medium text-[#8B96AB]">Display name</label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                maxLength={40}
-                className="w-full rounded-lg border border-[#5EEAD4]/10 bg-[#0F1521] px-3 py-2.5 text-sm text-[#EDF1F7] outline-none focus:border-[#5EEAD4]/50"
-              />
-            </div>
-
-            <div>
-              <label className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-[#8B96AB]">
-                <GraduationCap size={12} /> Grade level
-              </label>
-              <select
-                value={grade}
-                onChange={(e) => setGrade(e.target.value as GradeLevel)}
-                className="w-full rounded-lg border border-[#5EEAD4]/10 bg-[#0F1521] px-3 py-2.5 text-sm text-[#EDF1F7] outline-none focus:border-[#5EEAD4]/50"
-              >
-                {unlockedLevels.map((level) => (
-                  <option key={level.id} value={level.id}>
-                    {level.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <button
-              onClick={handleSaveProfile}
-              disabled={saving || !name.trim()}
-              className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-[#FFB020] py-2.5 text-sm font-semibold text-[#0F1521] transition-opacity hover:opacity-90 disabled:opacity-60"
-            >
-              {saving ? (
-                <Loader2 size={16} className="animate-spin" />
-              ) : saved ? (
-                <>
-                  <Check size={16} /> Saved
-                </>
-              ) : (
-                'Save changes'
-              )}
-            </button>
+        {error && (
+          <div className="mb-4 rounded-lg border border-[#FF6B6B]/30 bg-[#FF6B6B]/10 px-3 py-2 text-xs text-[#FF6B6B]">
+            {error}
           </div>
         )}
+
+        <form onSubmit={handleRegister} className="space-y-3">
+          <div className="relative">
+            <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8B96AB]" />
+            <input
+              type="text"
+              required
+              placeholder="Display name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              maxLength={40}
+              className="w-full rounded-lg border border-[#5EEAD4]/10 bg-[#0F1521] py-2.5 pl-10 pr-3 text-sm text-[#EDF1F7] outline-none focus:border-[#5EEAD4]/50"
+            />
+          </div>
+          <div className="relative">
+            <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8B96AB]" />
+            <input
+              type="email"
+              required
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full rounded-lg border border-[#5EEAD4]/10 bg-[#0F1521] py-2.5 pl-10 pr-3 text-sm text-[#EDF1F7] outline-none focus:border-[#5EEAD4]/50"
+            />
+          </div>
+          <div className="relative">
+            <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8B96AB]" />
+            <input
+              type="password"
+              required
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              minLength={6}
+              className="w-full rounded-lg border border-[#5EEAD4]/10 bg-[#0F1521] py-2.5 pl-10 pr-3 text-sm text-[#EDF1F7] outline-none focus:border-[#5EEAD4]/50"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading || !name.trim()}
+            className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#FFB020] py-2.5 text-sm font-semibold text-[#0F1521] transition-opacity hover:opacity-90 disabled:opacity-60"
+          >
+            {loading && <Loader2 size={16} className="animate-spin" />}
+            Create account
+          </button>
+        </form>
+
+        <p className="mt-6 text-center text-xs text-[#8B96AB]">
+          Already have an account?{' '}
+          <Link href="/login" className="font-medium text-[#5EEAD4] hover:underline">
+            Log in
+          </Link>
+        </p>
       </div>
-
-      {/* Not-yet-persisted notice — only applies to the section below now */}
-      <div className="flex items-start gap-2 rounded-xl border border-[#5EEAD4]/20 bg-[#5EEAD4]/5 p-3 text-xs text-[#8B96AB]">
-        <Info size={14} className="mt-0.5 shrink-0 text-[#5EEAD4]" />
-        <span>The preferences below apply to this session only for now.</span>
-      </div>
-
-      <SettingRow
-        icon={soundEnabled ? Volume2 : VolumeX}
-        title="Sound effects"
-        description="Play sounds for correct and incorrect answers"
-      >
-        <Toggle checked={soundEnabled} onChange={setSoundEnabled} />
-      </SettingRow>
-
-      <SettingRow
-        icon={Gauge}
-        title="Default difficulty"
-        description="Starting difficulty for new practice sessions"
-      >
-        <div className="flex gap-2 w-full">
-          {(['easy', 'medium', 'hard'] as Difficulty[]).map((d) => (
-            <button
-              key={d}
-              type="button"
-              onClick={() => setDefaultDifficulty(d)}
-              className={`flex-1 rounded-lg py-2 text-sm font-medium capitalize transition-colors ${
-                defaultDifficulty === d
-                  ? 'bg-[#FFB020] text-[#0F1521]'
-                  : 'bg-[#0F1521] text-[#8B96AB] hover:bg-[#1C2536] hover:text-[#EDF1F7]'
-              }`}
-            >
-              {d}
-            </button>
-          ))}
-        </div>
-      </SettingRow>
     </div>
-  );
-}
-
-function SettingRow({
-  icon: Icon,
-  title,
-  description,
-  children,
-}: {
-  icon: LucideIcon;
-  title: string;
-  description: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="card-surface flex items-center justify-between gap-4 p-5">
-      <div className="flex items-center gap-2.5">
-        <div className="rounded-lg bg-[#161E2E] p-2 text-[#8B96AB]">
-          <Icon size={18} strokeWidth={2} />
-        </div>
-        <div>
-          <p className="text-sm font-semibold text-[#EDF1F7]">{title}</p>
-          <p className="text-xs text-[#8B96AB]">{description}</p>
-        </div>
-      </div>
-      {children}
-    </div>
-  );
-}
-
-function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
-  return (
-    <button
-      onClick={() => onChange(!checked)}
-      className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${
-        checked ? 'bg-[#FFB020]' : 'bg-[#161E2E]'
-      }`}
-    >
-      <span
-        className={`absolute top-0.5 h-5 w-5 rounded-full bg-[#0F1521] transition-transform ${
-          checked ? 'translate-x-5' : 'translate-x-0.5'
-        }`}
-      />
-    </button>
   );
 }
