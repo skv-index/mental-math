@@ -15,16 +15,21 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
 
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
     setError('');
+    setMessage('');
     setLoading(true);
 
-    const { error: signUpError } = await supabase.auth.signUp({
+    const redirectUrl = `${window.location.origin}/auth/callback`;
+
+    const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
       options: {
+        emailRedirectTo: redirectUrl,
         data: { name: name.trim() },
       },
     });
@@ -35,8 +40,13 @@ export default function RegisterPage() {
       return;
     }
 
-    router.push('/dashboard');
-    router.refresh();
+    if (data.session) {
+      router.push('/dashboard');
+      router.refresh();
+    } else {
+      setMessage('Registration successful! Please check your email for a confirmation link to activate your account.');
+      setLoading(false);
+    }
   }
 
   return (
@@ -64,6 +74,12 @@ export default function RegisterPage() {
         {error && (
           <div className="mb-4 rounded-lg border border-[#FF6B6B]/30 bg-[#FF6B6B]/10 px-3 py-2 text-xs text-[#FF6B6B]">
             {error}
+          </div>
+        )}
+
+        {message && (
+          <div className="mb-4 rounded-lg border border-[#5EEAD4]/30 bg-[#5EEAD4]/10 px-3 py-2 text-xs text-[#5EEAD4]">
+            {message}
           </div>
         )}
 
