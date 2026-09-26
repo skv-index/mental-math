@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Home, BookOpen, Trophy, User, Settings, Zap } from 'lucide-react';
 import { fetchCurrentUser } from '@/lib/getUser';
+import SignOutButton from '@/components/SignOutButton';
 
 export const metadata: Metadata = {
   title: 'Dashboard — MentalMath',
@@ -108,23 +109,26 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
             {/* Avatar */}
             {user && (
-              <Link
-                href="/profile"
-                className="relative flex h-9 w-9 items-center justify-center rounded-full overflow-hidden shrink-0 transition-transform hover:scale-105 ring-2 ring-[#7C4DFF]/30"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(124,77,255,0.15), rgba(244,114,182,0.15))',
-                  boxShadow: '0 2px 8px rgba(124,77,255,0.25)',
-                }}
-                title={user.name}
-              >
-                <Image
-                  src="/mascot-happy.png"
-                  alt={user.name ?? 'Profile'}
-                  fill
-                  sizes="36px"
-                  className="object-contain p-0.5"
-                />
-              </Link>
+              <>
+                <Link
+                  href="/profile"
+                  className="relative flex h-9 w-9 items-center justify-center rounded-full overflow-hidden shrink-0 transition-transform hover:scale-105 ring-2 ring-[#7C4DFF]/30"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(124,77,255,0.15), rgba(244,114,182,0.15))',
+                    boxShadow: '0 2px 8px rgba(124,77,255,0.25)',
+                  }}
+                  title={user.name}
+                >
+                  <Image
+                    src="/mascot-happy.png"
+                    alt={user.name ?? 'Profile'}
+                    fill
+                    sizes="36px"
+                    className="object-contain p-0.5"
+                  />
+                </Link>
+                <SignOutButton />
+              </>
             )}
           </div>
         </div>

@@ -1,12 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Volume2, VolumeX, Brain, Info } from 'lucide-react';
+import { Volume2, VolumeX, Brain, Info, LogOut } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { METHODS } from '@/data/methods';
 import { Difficulty } from '@/types';
 import { fetchDefaultDifficulty, updateDefaultDifficulty } from '@/lib/updateUser';
 import { useEffect } from 'react';
+import SignOutButton from '@/components/SignOutButton';
 
 export default function SettingsPage() {
   const [soundEnabled, setSoundEnabled] = useState(true);
@@ -103,6 +104,20 @@ export default function SettingsPage() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Account */}
+      <div className="card-surface p-5">
+        <div className="mb-4 flex items-center gap-2.5">
+          <div className="rounded-lg bg-[#FF6B6B]/10 p-2 text-[#FF6B6B]">
+            <LogOut size={18} strokeWidth={2} />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-[#EDF1F7]">Account</p>
+            <p className="text-xs text-[#8B96AB]">Sign out of MentalMath on this device</p>
+          </div>
+        </div>
+        <SignOutButton variant="full" />
       </div>
     </div>
   );
